@@ -46,7 +46,7 @@ public class DatabaseManager : MonoBehaviour {
         }
     }
 
-    // ================= GET DATA =============================
+    // ================= USER LOGIN =============================
     public static async Task<bool> LoginUser (string un, string pw) {
         try {
             string lem = UsernameToEmail(un);
@@ -63,4 +63,32 @@ public class DatabaseManager : MonoBehaviour {
     private static string UsernameToEmail (string username) {
         return username.Trim() + "@sweetbook.ikigai.com";
     }
+
+    // ================ GET DATA ===============================
+    public static async Task<User> GetUserData () {
+        try {
+            FirebaseUser user = auth.CurrentUser;
+            if (user == null) {
+                Debug.LogError("User is not logged in");
+                return null;
+            }
+
+            DataSnapshot snapshot = await dbReference.Child("users").Child(user.UserId).GetValueAsync();
+
+            if (snapshot.Exists) {
+                User userData = JsonUtility.FromJson<User>(snapshot.GetRawJsonValue());
+
+                Debug.Log("data has been got!");
+                Debug.Log("Username: " + userData.username);
+                Debug.Log("Email: " + userData.email);
+                return userData;
+            }
+            return null;
+        } catch (Exception e) {
+            Debug.LogError(e.Message);
+            return null;
+        }
+    }
+    
+    
 }

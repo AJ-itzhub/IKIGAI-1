@@ -1,3 +1,4 @@
+// this is the data structure of the classroom that a user holds
 public class Classroom {
     public string className;
     public int langProgress, mathProgress, sciProgress, valProgress, pehProgress;
